@@ -26,8 +26,6 @@ from flask import Blueprint
 
 from .apihelper import Api
 
-from .user import API as USER_API
-
 __all__ = ('API_BLUEPRINT',)
 
 URL_PREFIX = '/api/'
@@ -51,5 +49,3 @@ API = Api(
 )
 
 # HANDLER = ExceptionHandler(API)
-
-API.add_namespace(USER_API)

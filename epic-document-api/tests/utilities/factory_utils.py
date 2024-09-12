@@ -18,7 +18,7 @@ Test Utility for creating model factory.
 from faker import Faker
 from flask import g
 
-from scaffold_api.config import get_named_config
+from epic_document_api.config import get_named_config
 
 CONFIG = get_named_config('testing')
 fake = Faker()

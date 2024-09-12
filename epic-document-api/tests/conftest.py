@@ -20,8 +20,8 @@ from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 
 from api import create_app, setup_jwt_manager
-from scaffold_api.auth import jwt as _jwt
-from scaffold_api.models import db as _db
+from epic_document_api.auth import jwt as _jwt
+from epic_document_api.models import db as _db
 
 
 @pytest.fixture(scope='session')

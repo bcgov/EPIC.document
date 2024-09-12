@@ -19,7 +19,7 @@ Test-Suite to ensure that the Notification methods are working as expected.
 
 import pytest
 
-from scaffold_api.utils import notification
+from epic_document_api.utils import notification
 
 
 @pytest.mark.parametrize('test_input_email,expected',

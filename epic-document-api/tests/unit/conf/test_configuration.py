@@ -19,7 +19,7 @@ from importlib import reload
 
 import pytest
 
-import scaffold_api.config as config
+import epic_document_api.config as config
 
 
 # testdata pattern is ({str: environment}, {expected return value})

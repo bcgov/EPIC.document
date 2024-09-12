@@ -15,7 +15,7 @@
 
 from marshmallow import fields, post_dump
 
-from scaffold_api.models import ma
+from epic_document_api.models import ma
 
 
 class BaseSchema(ma.ModelSchema):  # pylint: disable=too-many-ancestors

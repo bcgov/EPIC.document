@@ -16,8 +16,8 @@
 
 Test-Suite to ensure that the version utilities are working as expected.
 """
-from scaffold_api.utils import run_version
-from scaffold_api.version import __version__
+from epic_document_api.utils import run_version
+from epic_document_api.version import __version__
 
 
 def test_get_version():

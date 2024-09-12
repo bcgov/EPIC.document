@@ -18,7 +18,7 @@ Test Utility for creating test scenarios.
 
 from faker import Faker
 
-from scaffold_api.config import get_named_config
+from epic_document_api.config import get_named_config
 
 
 fake = Faker()

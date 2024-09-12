@@ -11,19 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Supply version and commit hash info."""
-import os
 
-from scaffold_api.version import __version__
+"""This exports all of the models and schemas used by the application."""
 
+from .db import db, ma, migrate
 
-def _get_build_openshift_commit_hash():
-    return os.getenv('OPENSHIFT_BUILD_COMMIT', None)
-
-
-def get_run_version():
-    """Return a formatted version string for this service."""
-    commit_hash = _get_build_openshift_commit_hash()
-    if commit_hash:
-        return f'{__version__}-{commit_hash}'
-    return __version__
+from .documents import Document

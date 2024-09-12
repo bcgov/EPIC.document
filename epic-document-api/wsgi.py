@@ -1,4 +1,4 @@
-from scaffold_api import create_app
+from epic_document_api import create_app
 
 application = create_app()
 

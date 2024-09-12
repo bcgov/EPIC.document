@@ -21,7 +21,7 @@ from urllib.parse import unquote
 
 import pytest
 
-from scaffold_api.utils.util import camelback2snake, escape_wam_friendly_url, snake2camelback
+from epic_document_api.utils.util import camelback2snake, escape_wam_friendly_url, snake2camelback
 
 
 TEST_CAMEL_DATA = {'loginSource': 'PASSCODE', 'userName': 'test name', 'realmAccess': {

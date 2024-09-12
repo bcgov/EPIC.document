@@ -10,11 +10,11 @@ import secure
 from flask import Flask, current_app, g, request
 from flask_cors import CORS
 
-from scaffold_api.auth import jwt
-from scaffold_api.config import get_named_config
-from scaffold_api.models import db, ma, migrate
-from scaffold_api.utils.cache import cache
-from scaffold_api.utils.util import allowedorigins
+from epic_document_api.auth import jwt
+from epic_document_api.config import get_named_config
+from epic_document_api.models import db, ma, migrate
+from epic_document_api.utils.cache import cache
+from epic_document_api.utils.util import allowedorigins
 
 # Security Response headers
 csp = (
@@ -39,7 +39,7 @@ secure_headers = secure.Secure(
 def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
     """Create flask app."""
     # pylint: disable=import-outside-toplevel
-    from scaffold_api.resources import (
+    from epic_document_api.resources import (
         API_BLUEPRINT,
     )
 
@@ -63,8 +63,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
 
     # # Database migrate initialize
     migrate.init_app(app, db)
-    with app.app_context():
-        db.create_all()
 
     # Marshmallow initialize
     ma.init_app(app)

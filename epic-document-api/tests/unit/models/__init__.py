@@ -14,4 +14,4 @@
 
 """The Test-Suite used to ensure that the Model objects are working correctly."""
 
-from ....src.scaffold_api.models.user import StaffUser
+from ....src.epic_document_api.models.user import StaffUser

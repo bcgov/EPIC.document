@@ -18,7 +18,7 @@ Test-Suite to ensure that the CORS decorator is working as expected.
 """
 import pytest
 
-from scaffold_api.utils.util import cors_preflight
+from epic_document_api.utils.util import cors_preflight
 
 
 TEST_CORS_METHODS_DATA = [
