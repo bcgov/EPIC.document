@@ -279,8 +279,8 @@
           "containerId": "9e254d9e-9aa8-4357-b86e-4762544c8dce"
         }
       ],
-      "scaffold-web": [],
-      "scaffold-admin": []
+      "epic-document-web": [],
+      "epic-document-admin": []
     }
   },
   "groups": [
@@ -383,7 +383,7 @@
       }
     },
     {
-      "clientId": "scaffold-web",
+      "clientId": "epic-document-web",
       "rootUrl": "http://localhost:8080/*",
       "adminUrl": "/",
       "baseUrl": "/*",
@@ -548,7 +548,7 @@
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
           "config": {
-            "included.client.audience": "scaffold-web",
+            "included.client.audience": "epic-document-web",
             "id.token.claim": "false",
             "access.token.claim": "true",
             "userinfo.token.claim": "false"
@@ -569,7 +569,7 @@
       }
     },
     {
-      "clientId": "scaffold-admin",
+      "clientId": "epic-document-admin",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
@@ -623,7 +623,7 @@
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
           "config": {
-            "included.client.audience": "scaffold-web",
+            "included.client.audience": "epic-document-web",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }
@@ -634,7 +634,7 @@
           "protocolMapper": "oidc-hardcoded-claim-mapper",
           "consentRequired": false,
           "config": {
-            "claim.value": "scaffold-admin",
+            "claim.value": "epic-document-admin",
             "userinfo.token.claim": "true",
             "id.token.claim": "true",
             "access.token.claim": "true",
@@ -740,7 +740,7 @@
           "protocolMapper": "oidc-hardcoded-claim-mapper",
           "consentRequired": false,
           "config": {
-            "claim.value": "scaffold",
+            "claim.value": "epic-document",
             "userinfo.token.claim": "true",
             "id.token.claim": "true",
             "access.token.claim": "true",
@@ -824,12 +824,12 @@
       ]
     },
     {
-      "username": "service-account-scaffold-admin",
+      "username": "service-account-epic-document-admin",
       "enabled": true,
       "totp": false,
       "emailVerified": false,
-      "email": "service-account-scaffold-admin@placeholder.org",
-      "serviceAccountClientId": "scaffold-admin",
+      "email": "service-account-epic-document-admin@placeholder.org",
+      "serviceAccountClientId": "epic-document-admin",
       "credentials": [],
       "disableableCredentialTypes": [],
       "requiredActions": [],

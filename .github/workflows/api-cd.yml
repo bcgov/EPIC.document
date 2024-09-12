@@ -6,7 +6,7 @@ on:
     branches:
       - develop
     paths:
-      - "scaffold-api/**"
+      - "epic-document-api/**"
   workflow_dispatch:
     inputs:
       environment:
@@ -17,17 +17,17 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./scaffold-api
+    working-directory: ./epic-document-api
 
 env:
-  APP_NAME: "scaffold-api"
+  APP_NAME: "epic-document-api"
   TAG_NAME: "${{ github.event.inputs.environment || 'dev' }}" # If the environment type is manually selected, use the input value; otherwise, use 'dev' as default
 
 jobs:
   api-cd:
     runs-on: ubuntu-20.04
 
-    if: github.repository == 'bcgov/EPIC.scaffold'
+    if: github.repository == 'bcgov/EPIC.epic-document'
     environment:
       name: "dev"
 

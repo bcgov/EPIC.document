@@ -1,6 +1,6 @@
-app: scaffold-api  # Replace with your desired application name
-githubRepo: https://github.com/bcgov/EPIC.scaffold.git  # Replace with your actual repo URL
-githubContextDir: /scaffold-api
+app: epic-document-api  # Replace with your desired application name
+githubRepo: https://github.com/bcgov/EPIC.epic-document.git  # Replace with your actual repo URL
+githubContextDir: /epic-document-api
 resources:
   limits:
     cpu: 1500m

@@ -1,27 +1,27 @@
 version: "3.9"
 
 services:
-  scaffold-api-db:
+  epic-document-api-db:
     image: postgres
     volumes:
       - db-data:/var/lib/postgresql/data2
     environment:
-      - POSTGRES_USER=scaffold
-      - POSTGRES_PASSWORD=scaffold
-      - POSTGRES_DB=scaffold
+      - POSTGRES_USER=epic-document
+      - POSTGRES_PASSWORD=epic-document
+      - POSTGRES_DB=epic-document
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - 54332:5432/tcp
     restart: unless-stopped
 
-  scaffold-api-db-test:
+  epic-document-api-db-test:
     image: postgres
     volumes:
       - db-data:/var/lib/postgresql/data3
     environment:
-      - POSTGRES_USER=scaffold
-      - POSTGRES_PASSWORD=scaffold
-      - POSTGRES_DB=scaffold
+      - POSTGRES_USER=epic-document
+      - POSTGRES_PASSWORD=epic-document
+      - POSTGRES_DB=epic-document
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - 54333:5432/tcp

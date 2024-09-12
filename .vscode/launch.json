@@ -7,9 +7,9 @@
         {
             "name": "Scaffold API",
             "type": "python",
-            "cwd": "${workspaceFolder}/scaffold-api/",
+            "cwd": "${workspaceFolder}/epic-document-api/",
             "request": "launch",
-            "program": "${workspaceFolder}/scaffold-api/wsgi.py",
+            "program": "${workspaceFolder}/epic-document-api/wsgi.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }

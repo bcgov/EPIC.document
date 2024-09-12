@@ -5,12 +5,12 @@ on:
     branches:
       - develop
     paths:
-      - "scaffold-api/**"
+      - "epic-document-api/**"
 
 defaults:
   run:
     shell: bash
-    working-directory: ./scaffold-api
+    working-directory: ./epic-document-api
 
 jobs:
   setup-job:
@@ -97,8 +97,8 @@ jobs:
        - name: Upload coverage to Codecov
          uses: codecov/codecov-action@v4
          with:
-          flags: scaffold-api
-          name: codecov-scaffold-api
+          flags: epic-document-api
+          name: codecov-epic-document-api
           fail_ci_if_error: true
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}

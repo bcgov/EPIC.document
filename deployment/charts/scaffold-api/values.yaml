@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: scaffold-api
+  repository: epic-document-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "dev"
@@ -15,9 +15,9 @@ resources:
     request: 256Mi
 
 database:
-  secret: scaffold-patroni
+  secret: epic-document-patroni
   service:
-    name: scaffold-patroni
+    name: epic-document-patroni
     port: 5432
 
 
@@ -30,7 +30,7 @@ service:
 auth:
   jwt:
     alg: RS256
-    aud: scaffold-web
+    aud: epic-document-web
     cacheEnabled: true
     issuer: https://test.loginproxy.gov.bc.ca/auth/realms/eao-epic
     cacheTimeout: "300"

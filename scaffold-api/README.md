@@ -1,6 +1,6 @@
 # SCAFFOLD-API
 
-A scaffold Python flask API application to be used as a template.
+A epic-document Python flask API application to be used as a template.
 
 ## Getting Started
 
@@ -10,9 +10,9 @@ A scaffold Python flask API application to be used as a template.
     - [Docker](https://www.docker.com/)
     - [Docker-Compose](https://docs.docker.com/compose/install/)
 * Install Dependencies
-    - Run `make setup` in the root of the project (scaffold-api)
+    - Run `make setup` in the root of the project (epic-document-api)
 * Start the databases
-    - Run `docker-compose up` in the root of the project (scaffold-api)
+    - Run `docker-compose up` in the root of the project (epic-document-api)
 
 ## Environment Variables
 
