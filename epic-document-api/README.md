@@ -1,4 +1,4 @@
-# SCAFFOLD-API
+# EPIC-DOCUMENT-API
 
 A epic-document Python flask API application to be used as a template.
 
@@ -47,4 +47,4 @@ Open [http://localhost:5000/api](http://localhost:5000/api) to view it in the br
 
 Ensure the latest version of [VS Code](https://code.visualstudio.com) is installed.
 
-The [`launch.json`](.vscode/launch.json) is already configured with a launch task (SCAFFOLD-API Launch) that allows you to launch chrome in a debugging capacity and debug through code within the editor. 
+The [`launch.json`](.vscode/launch.json) is already configured with a launch task (EPIC-DOCUMENT-API Launch) that allows you to launch chrome in a debugging capacity and debug through code within the editor. 

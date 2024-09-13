@@ -1,4 +1,4 @@
-name: SCAFFOLD API CI
+name: EPIC-DOCUMENT API CI
 
 on:
   pull_request:
