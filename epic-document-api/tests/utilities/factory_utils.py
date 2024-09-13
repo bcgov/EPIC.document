@@ -20,6 +20,7 @@ from flask import g
 
 from epic_document_api.config import get_named_config
 
+
 CONFIG = get_named_config('testing')
 fake = Faker()
 

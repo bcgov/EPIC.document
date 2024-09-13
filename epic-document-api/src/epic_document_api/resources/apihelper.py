@@ -16,8 +16,10 @@
 to support swagger on http
 """
 from functools import wraps
+
 from flask import url_for
-from flask_restx import Api as BaseApi, fields
+from flask_restx import Api as BaseApi
+from flask_restx import fields
 from flask_restx.apidoc import apidoc
 from marshmallow import fields as ma_fields
 

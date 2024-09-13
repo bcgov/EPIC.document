@@ -4,6 +4,7 @@ Manages the engagement
 """
 
 from marshmallow import EXCLUDE, Schema, fields
+
 from epic_document_api.models import User
 
 

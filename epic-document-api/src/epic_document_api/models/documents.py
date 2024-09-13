@@ -16,3 +16,4 @@ class Document(db.Model):
 
     id = Column(db.Integer, primary_key=True, autoincrement=True)
     name = Column(db.String(255), nullable=False)
+    path = Column(db.String(255), nullable=False)

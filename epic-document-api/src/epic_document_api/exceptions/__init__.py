@@ -19,7 +19,7 @@ BusinessException - error, status_code - Business rules error
 error - a description of the error {code / description: classname / full text}
 status_code - where possible use HTTP Error Codes
 """
-from werkzeug.exceptions import UnprocessableEntity, Forbidden, NotFound, BadRequest, Conflict
+from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, UnprocessableEntity
 from werkzeug.wrappers.response import Response
 
 
