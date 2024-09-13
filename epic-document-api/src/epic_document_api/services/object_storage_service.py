@@ -17,12 +17,12 @@ class ObjectStorageService:
     def __init__(self):
         """Initialize the service."""
         # initialize s3 config from environment variables
-        self.s3_access_key_id = current_app.config('S3_ACCESS_KEY_ID')
-        self.s3_secret_access_key = current_app.config('S3_SECRET_ACCESS_KEY')
-        self.s3_host = current_app.config('S3_HOST')
-        self.s3_bucket = current_app.config('S3_BUCKET')
-        self.s3_region = current_app.config('S3_REGION')
-        self.s3_service = current_app.config('S3_SERVICE')
+        self.s3_access_key_id = current_app.config.get('S3_ACCESS_KEY_ID')
+        self.s3_secret_access_key = current_app.config.get('S3_SECRET_ACCESS_KEY')
+        self.s3_host = current_app.config.get('S3_HOST')
+        self.s3_bucket = current_app.config.get('S3_BUCKET')
+        self.s3_region = current_app.config.get('S3_REGION')
+        self.s3_service = current_app.config.get('S3_SERVICE')
 
     def get_url(self, filename: string):
         """Get the object url."""
@@ -63,6 +63,7 @@ class ObjectStorageService:
 
         saved_file = Document(
             name=file.get('filename'),
+            unique_name=unique_filename,
             path=file.get('filepath'),
         )
         saved_file.save()
@@ -73,8 +74,10 @@ class ObjectStorageService:
         """Generate the S3 URI."""
         return s3_source_uri or self.get_url(unique_filename)
 
-    def _make_s3_request(self, s3_uri: str, s3_source_uri: str, auth: AWSRequestsAuth) -> requests.Response:
+    @staticmethod
+    def _make_s3_request(s3_uri: str, s3_source_uri: str, auth: AWSRequestsAuth) -> requests.Response:
         """Make the appropriate S3 request."""
         if s3_source_uri:
             return requests.get(s3_uri, auth=auth)
+        print(s3_uri)
         return requests.put(s3_uri, data=None, auth=auth)

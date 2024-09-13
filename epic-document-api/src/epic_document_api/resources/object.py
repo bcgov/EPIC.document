@@ -15,18 +15,16 @@
 
 from http import HTTPStatus
 
-from flask import jsonify
 from flask_restx import Namespace, Resource, cors
 
-from epic_document_api.auth import auth
 from epic_document_api.schemas.fileobject import BlobObject, BlobObjectRequest
 from epic_document_api.services.object_storage_service import ObjectStorageService
 from epic_document_api.utils.util import cors_preflight
 
 from .apihelper import Api as ApiHelper
+from epic_document_api.auth import auth
 
-
-API = Namespace("submissions", description="Endpoints for Submission Management")
+API = Namespace("objects", description="Endpoints for Submission Management")
 """Custom exception messages
 """
 
@@ -41,7 +39,7 @@ object_response_model = ApiHelper.convert_ma_schema_to_restx_model(
 
 @cors_preflight("GET, OPTIONS, POST")
 @API.route("/", methods=["POST", "GET", "OPTIONS"])
-class SubmissionByItem(Resource):
+class ObjectAuthHeaders(Resource):
     """Resource for managing objects s3 auth headers."""
 
     @staticmethod

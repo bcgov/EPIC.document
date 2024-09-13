@@ -109,11 +109,11 @@ class _Config():  # pylint: disable=too-few-public-methods
     KEYCLOAK_ADMIN_USERNAME = os.getenv('MET_ADMIN_CLIENT_ID')
     KEYCLOAK_ADMIN_SECRET = os.getenv('MET_ADMIN_CLIENT_SECRET')
 
-    S3_BUCKET = os.getenv('S3_BUCKET'),
-    S3_ACCESS_KEY_ID = os.getenv('S3_ACCESS_KEY_ID'),
-    S3_SECRET_ACCESS_KEY = os.getenv('S3_SECRET_ACCESS_KEY'),
-    S3_HOST = os.getenv('S3_HOST'),
-    S3_REGION = os.getenv('S3_REGION'),
+    S3_BUCKET = os.getenv('S3_BUCKET')
+    S3_ACCESS_KEY_ID = os.getenv('S3_ACCESS_KEY_ID')
+    S3_SECRET_ACCESS_KEY = os.getenv('S3_SECRET_ACCESS_KEY')
+    S3_HOST = os.getenv('S3_HOST')
+    S3_REGION = os.getenv('S3_REGION')
     S3_SERVICE = os.getenv('S3_SERVICE')
 
 

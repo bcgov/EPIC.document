@@ -40,7 +40,7 @@ secure_headers = secure.Secure(
 def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
     """Create flask app."""
     # pylint: disable=import-outside-toplevel
-    from epic_document_api.resources import API_BLUEPRINT
+    from epic_document_api.resources import API_BLUEPRINT, OPS_BLUEPRINT
 
     # Flask app initialize
     app = Flask(__name__)
@@ -52,6 +52,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
 
     # Register blueprints
     app.register_blueprint(API_BLUEPRINT)  # Create the database (run once)
+    app.register_blueprint(OPS_BLUEPRINT)  # Create the database (run once)
 
     # Setup jwt for keycloak
     if os.getenv("FLASK_ENV", "production") != "testing":
