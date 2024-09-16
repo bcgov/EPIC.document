@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 3
+replicaCount: 1
 
 image:
   repository: artifacts.developer.gov.bc.ca/bcgov-docker-local
@@ -77,7 +77,7 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 500m
+    cpu: 75m
     memory: 512Mi
   requests:
     cpu: 20m
@@ -89,7 +89,7 @@ persistentVolume:
     - ReadWriteOnce
   annotations: {}
   mountPath: "/home/postgres/pgdata"
-  size: 333Mi
+  size: 256Mi
   storageClass: "netapp-block-standard"
 
 
