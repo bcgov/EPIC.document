@@ -131,26 +131,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Chart.Name }}
                   key: PYTHONBUFFERED
-            - name: CDOGS_TOKEN_END_POINT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: CDOGS_TOKEN_END_POINT
-            - name: CDOGS_API_ENDPOINT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: CDOGS_API_ENDPOINT
-            - name: CDOGS_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: CDOGS_CLIENT_ID
-            - name: CDOGS_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: CDOGS_CLIENT_SECRET
             - name: KEYCLOAK_BASE_URL
               valueFrom:
                 configMapKeyRef:
