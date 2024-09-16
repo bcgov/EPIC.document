@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Endpoints to check and manage the health of the service."""
-from epic_document_api.models import db
 from flask_restx import Namespace, Resource
 from sqlalchemy import exc, text
+
+from epic_document_api.models import db
 
 
 API = Namespace('OPS', description='Service - OPS checks')

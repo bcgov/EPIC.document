@@ -6,8 +6,8 @@
 MKFILE_PATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_ABS_DIR:=$(patsubst %/,%,$(dir $(MKFILE_PATH)))
 
-PROJECT_NAME:=api
-DOCKER_NAME:=api
+PROJECT_NAME:=epic_document_api
+DOCKER_NAME:=epic_document_api
 
 #################################################################################
 # COMMANDS -- license                                                           #

@@ -26,7 +26,6 @@ class ObjectStorageService:
 
     def get_url(self, filename: string):
         """Get the object url."""
-
         if not all([self.s3_host, self.s3_bucket, filename]):
             return ''
 
@@ -34,7 +33,6 @@ class ObjectStorageService:
 
     def apply_auth_headers(self, file: Dict) -> Dict:
         """Get the S3 auth headers for the provided files."""
-
         # Check for missing S3 configuration
         if not all([self.s3_access_key_id, self.s3_secret_access_key, self.s3_host, self.s3_bucket]):
             raise ValueError('Missing S3 configuration')

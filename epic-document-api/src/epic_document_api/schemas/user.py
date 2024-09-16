@@ -5,8 +5,6 @@ Manages the engagement
 
 from marshmallow import EXCLUDE, Schema, fields
 
-from epic_document_api.models import User
-
 
 class UserSchema(Schema):
     """User schema."""
@@ -26,13 +24,13 @@ class UserSchema(Schema):
 
 
 class UserRequestSchema(Schema):
-    """User Request Schema"""
+    """User Request Schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exclude unknown fields in the deserialized output."""
 
         unknown = EXCLUDE
-    
+
     first_name = fields.Str(data_key='first_name')
     middle_name = fields.Str(data_key='description')
     last_name = fields.Str(data_key='last_name')

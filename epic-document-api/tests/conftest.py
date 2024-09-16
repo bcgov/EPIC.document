@@ -16,10 +16,10 @@ import time
 from random import random
 
 import pytest
-from api import create_app, setup_jwt_manager
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 
+from epic_document_api import create_app, setup_jwt_manager
 from epic_document_api.auth import jwt as _jwt
 from epic_document_api.models import db as _db
 

@@ -149,7 +149,7 @@ You need a policy to allow pods in xxxx-dev to connect with each other
 
 
 # Github Workflows
-you can find a working example here: https://github.com/bcgov/EPIC.epic-document/tree/main/.github/workflows
+you can find a working example here: https://github.com/bcgov/EPIC.document/tree/main/.github/workflows
 
 - create a github-action service account openshift in the tools namespace and bind to it image puller and image pusher roles
 - Add the following secrets in the repo settings under repository secrets: OPENSHIFT_IMAGE_REGISTRY (the public image repository, ignore the path just the base  url), OPENSHIFT_LOGIN_REGISTRY (you can pull this from the same place you get your oc login command, OPENSHIFT_REPOSITORY, OPENSHIFT_SA_NAME (github_action), OPENSHIFT_SA_TOKEN(github-action token, find it in secrets)

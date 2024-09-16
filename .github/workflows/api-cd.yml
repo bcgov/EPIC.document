@@ -27,7 +27,7 @@ jobs:
   api-cd:
     runs-on: ubuntu-20.04
 
-    if: github.repository == 'bcgov/EPIC.epic-document'
+    if: github.repository == 'bcgov/EPIC.document'
     environment:
       name: "dev"
 

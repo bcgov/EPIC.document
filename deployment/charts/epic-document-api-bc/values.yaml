@@ -1,5 +1,5 @@
 app: epic-document-api  # Replace with your desired application name
-githubRepo: https://github.com/bcgov/EPIC.epic-document.git  # Replace with your actual repo URL
+githubRepo: https://github.com/bcgov/EPIC.document.git  # Replace with your actual repo URL
 githubContextDir: /epic-document-api
 resources:
   limits:
