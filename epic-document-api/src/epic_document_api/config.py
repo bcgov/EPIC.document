@@ -47,29 +47,6 @@ def get_named_config(config_name: str = 'development'):
     return config
 
 
-def get_s3_config(key: str):
-    """Return the s3 configuration object based on the tenant short name.
-
-    :raise: KeyError: if an unknown configuration is requested
-    """
-    tenant_short_name = g.get('tenant_name', None)
-    if not tenant_short_name:
-        return _Config.S3_CONFIG['DEFAULT'][key]
-
-    tenant_short_name = tenant_short_name.upper()
-
-    if tenant_short_name in _Config.S3_CONFIG:
-        return _Config.S3_CONFIG[tenant_short_name][key]
-
-    config_key = f'{tenant_short_name}_{key}'
-    config_value = os.getenv(config_key)
-
-    if not config_value:
-        return _Config.S3_CONFIG['DEFAULT'][key]
-
-    return config_value
-
-
 class _Config():  # pylint: disable=too-few-public-methods
     """Base class configuration that should set reasonable defaults for all the other configurations."""
 

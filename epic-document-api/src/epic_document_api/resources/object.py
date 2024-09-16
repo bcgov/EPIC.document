@@ -17,40 +17,41 @@ from http import HTTPStatus
 
 from flask_restx import Namespace, Resource, cors
 
+from epic_document_api.auth import auth
 from epic_document_api.schemas.fileobject import BlobObject, BlobObjectRequest
 from epic_document_api.services.object_storage_service import ObjectStorageService
 from epic_document_api.utils.util import cors_preflight
 
 from .apihelper import Api as ApiHelper
-from epic_document_api.auth import auth
 
-API = Namespace("objects", description="Endpoints for Submission Management")
+
+API = Namespace('objects', description='Endpoints for Submission Management')
 """Custom exception messages
 """
 
 object_request_model = ApiHelper.convert_ma_schema_to_restx_model(
-    API, BlobObjectRequest(), "An object to upload"
+    API, BlobObjectRequest(), 'An object to upload'
 )
 
 object_response_model = ApiHelper.convert_ma_schema_to_restx_model(
-    API, BlobObject(), "An object with auth headers"
+    API, BlobObject(), 'An object with auth headers'
 )
 
 
-@cors_preflight("GET, OPTIONS, POST")
-@API.route("/", methods=["POST", "GET", "OPTIONS"])
+@cors_preflight('GET, OPTIONS, POST')
+@API.route('/', methods=['POST', 'GET', 'OPTIONS'])
 class ObjectAuthHeaders(Resource):
     """Resource for managing objects s3 auth headers."""
 
     @staticmethod
-    @ApiHelper.swagger_decorators(API, endpoint_description="Get s3 auth headers for object")
+    @ApiHelper.swagger_decorators(API, endpoint_description='Get s3 auth headers for object')
     @API.expect(object_request_model)
     @API.response(
-        code=HTTPStatus.CREATED, model=object_response_model, description="File with s3 auth headers"
+        code=HTTPStatus.CREATED, model=object_response_model, description='File with s3 auth headers'
     )
-    @API.response(HTTPStatus.BAD_REQUEST, "Bad Request")
+    @API.response(HTTPStatus.BAD_REQUEST, 'Bad Request')
     @auth.require
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin='*')
     def post():
         """Get auth headers."""
         request_file = BlobObjectRequest().load(API.payload)

@@ -37,7 +37,7 @@ secure_headers = secure.Secure(
 )
 
 
-def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
+def create_app(run_mode=os.getenv('FLASK_ENV', 'development')):
     """Create flask app."""
     # pylint: disable=import-outside-toplevel
     from epic_document_api.resources import API_BLUEPRINT, OPS_BLUEPRINT
@@ -48,14 +48,14 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
     # All configuration are in config file
     app.config.from_object(get_named_config(run_mode))
 
-    CORS(app, resources={r"/*": {"origins": allowedorigins()}}, supports_credentials=True)
+    CORS(app, resources={r'/*': {'origins': allowedorigins()}}, supports_credentials=True)
 
     # Register blueprints
     app.register_blueprint(API_BLUEPRINT)  # Create the database (run once)
     app.register_blueprint(OPS_BLUEPRINT)  # Create the database (run once)
 
     # Setup jwt for keycloak
-    if os.getenv("FLASK_ENV", "production") != "testing":
+    if os.getenv('FLASK_ENV', 'production') != 'testing':
         setup_jwt_manager(app, jwt)
 
     # Database connection initialize
@@ -69,7 +69,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
 
     @app.before_request
     def set_origin():
-        g.origin_url = request.environ.get("HTTP_ORIGIN", "localhost")
+        g.origin_url = request.environ.get('HTTP_ORIGIN', 'localhost')
 
     build_cache(app)
 
@@ -77,18 +77,18 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
     def set_secure_headers(response):
         """Set CORS headers for security."""
         secure_headers.framework.flask(response)
-        response.headers.add("Cross-Origin-Resource-Policy", "*")
-        response.headers["Cross-Origin-Opener-Policy"] = "*"
-        response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
+        response.headers.add('Cross-Origin-Resource-Policy', '*')
+        response.headers['Cross-Origin-Opener-Policy'] = '*'
+        response.headers['Cross-Origin-Embedder-Policy'] = 'unsafe-none'
         return response
 
     @app.errorhandler(Exception)
     def handle_error(err):
-        if run_mode != "production":
+        if run_mode != 'production':
             # To get stacktrace in local development for internal server errors
             raise err
         current_app.logger.error(str(err))
-        return "Internal server error", HTTPStatus.INTERNAL_SERVER_ERROR
+        return 'Internal server error', HTTPStatus.INTERNAL_SERVER_ERROR
 
     # Return App for run in run.py file
     return app
@@ -103,7 +103,7 @@ def setup_jwt_manager(app_context, jwt_manager):
     """Use flask app to configure the JWTManager to work for a particular Realm."""
 
     def get_roles(a_dict):
-        return a_dict["realm_access"]["roles"]  # pragma: no cover
+        return a_dict['realm_access']['roles']  # pragma: no cover
 
-    app_context.config["JWT_ROLE_CALLBACK"] = get_roles
+    app_context.config['JWT_ROLE_CALLBACK'] = get_roles
     jwt_manager.init_app(app_context)
