@@ -30,8 +30,5 @@ jobs:
         shell: bash
         run: |
           oc project ${{ secrets.OPENSHIFT_REPOSITORY }}-tools
-          oc tag scaffold-api:latest scaffold-api:${{ github.event.inputs.environment }}
-          oc tag scaffold-web:latest scaffold-web:${{ github.event.inputs.environment }}
-          
-          oc rollout status dc/scaffold-api -n ${{ secrets.OPENSHIFT_REPOSITORY }}-${{ github.event.inputs.environment }} -w
-          oc rollout status dc/scaffold-web -n ${{ secrets.OPENSHIFT_REPOSITORY }}-${{ github.event.inputs.environment }} -w
+          oc tag epic-document-api:latest epic-document-api:${{ github.event.inputs.environment }}          
+          oc rollout status dc/epic-document-api -n ${{ secrets.OPENSHIFT_REPOSITORY }}-${{ github.event.inputs.environment }} -w
