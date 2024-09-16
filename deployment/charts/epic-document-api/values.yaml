@@ -8,11 +8,11 @@ image:
 
 resources:
   cpu:
-    limit: 250m
-    request: 150m
+    limit: 50m
+    request: 25m
   memory:
-    limit: 384Mi
-    request: 256Mi
+    limit: 128Mi
+    request: 64Mi
 
 database:
   secret: epic-document-patroni
