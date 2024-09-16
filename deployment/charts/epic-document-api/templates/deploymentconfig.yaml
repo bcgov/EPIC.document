@@ -174,5 +174,5 @@ triggers:
         - {{ .Chart.Name }}
       from:
         kind: ImageStreamTag
-        namespace: c72cba-tools
+        namespace: c8b80a-tools
         name: "{{ tpl .Values.image.repository . }}:{{ .Values.image.tag }}"
