@@ -34,7 +34,7 @@ class ObjectStorageService:
     def apply_auth_headers(self, file: Dict) -> Dict:
         """Get the S3 auth headers for the provided files."""
         # Check for missing S3 configuration
-        print(">>>>>>> " + self.s3_service)
+        print(">>>>>>> " + str(self.s3_service))
         if not self.s3_access_key_id:
             raise ValueError('Missing S3 Access Key ID')
         if not self.s3_secret_access_key:
