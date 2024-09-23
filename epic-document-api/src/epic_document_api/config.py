@@ -107,8 +107,6 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
 
     DEBUG = True
     TESTING = True
-    DEBUG = True
-    TESTING = True
 
     # POSTGRESQL
     DB_USER = os.getenv('DATABASE_TEST_USERNAME', 'postgres')
