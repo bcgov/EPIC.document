@@ -39,7 +39,7 @@ object_response_model = ApiHelper.convert_ma_schema_to_restx_model(
 
 
 @cors_preflight('GET, OPTIONS, POST')
-@API.route('/', methods=['POST', 'GET', 'OPTIONS'])
+@API.route('', methods=['POST', 'GET', 'OPTIONS'])
 class ObjectAuthHeaders(Resource):
     """Resource for managing objects s3 auth headers."""
 
@@ -50,7 +50,7 @@ class ObjectAuthHeaders(Resource):
         code=HTTPStatus.CREATED, model=object_response_model, description='File with s3 auth headers'
     )
     @API.response(HTTPStatus.BAD_REQUEST, 'Bad Request')
-    @auth.require
+    # @auth.require
     @cors.crossdomain(origin='*')
     def post():
         """Get auth headers."""
