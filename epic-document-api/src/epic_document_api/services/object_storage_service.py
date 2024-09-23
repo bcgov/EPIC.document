@@ -5,7 +5,6 @@ from typing import Dict
 
 import requests
 from aws_requests_auth.aws_auth import AWSRequestsAuth
-from flask import current_app
 from markupsafe import string
 
 from epic_document_api.models import Document
