@@ -17,12 +17,12 @@ class ObjectStorageService:
     def __init__(self):
         """Initialize the service."""
         # initialize s3 config from environment variables
-        self.s3_access_key_id = current_app.config.get('S3_ACCESS_KEY_ID')
-        self.s3_secret_access_key = current_app.config.get('S3_SECRET_ACCESS_KEY')
-        self.s3_host = current_app.config.get('S3_HOST')
-        self.s3_bucket = current_app.config.get('S3_BUCKET')
-        self.s3_region = current_app.config.get('S3_REGION')
-        self.s3_service = current_app.config.get('S3_SERVICE')
+        self.s3_access_key_id = os.getenv('S3_ACCESS_KEY_ID', '')
+        self.s3_secret_access_key = os.getenv('S3_SECRET', '')
+        self.s3_host = os.getenv('S3_HOST', '')
+        self.s3_bucket = os.getenv('S3_BUCKET', '')
+        self.s3_region = os.getenv('S3_REGION', '')
+        self.s3_service = os.getenv('S3_SERVICE', '')
 
     def get_url(self, filename: string):
         """Get the object url."""
