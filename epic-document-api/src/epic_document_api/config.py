@@ -99,6 +99,13 @@ class DevConfig(_Config):  # pylint: disable=too-few-public-methods
 
     TESTING = False
     DEBUG = True
+
+    S3_BUCKET = os.getenv('S3_BUCKET')
+    S3_ACCESS_KEY_ID = os.getenv('S3_ACCESS_KEY_ID')
+    S3_SECRET_ACCESS_KEY = os.getenv('S3_SECRET_ACCESS_KEY')
+    S3_HOST = os.getenv('S3_HOST')
+    S3_REGION = os.getenv('S3_REGION')
+    S3_SERVICE = os.getenv('S3_SERVICE')
     print(f'SQLAlchemy URL (DevConfig): {_Config.SQLALCHEMY_DATABASE_URI}')
 
 
@@ -124,6 +131,13 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     JWT_OIDC_WELL_KNOWN_CONFIG = os.getenv('JWT_OIDC_WELL_KNOWN_CONFIG')
     JWT_OIDC_TEST_ALGORITHMS = os.getenv('JWT_OIDC_TEST_ALGORITHMS')
     JWT_OIDC_TEST_JWKS_URI = os.getenv('JWT_OIDC_TEST_JWKS_URI', default=None)
+
+    S3_BUCKET = os.getenv('S3_BUCKET')
+    S3_ACCESS_KEY_ID = os.getenv('S3_ACCESS_KEY_ID')
+    S3_SECRET_ACCESS_KEY = os.getenv('S3_SECRET_ACCESS_KEY')
+    S3_HOST = os.getenv('S3_HOST')
+    S3_REGION = os.getenv('S3_REGION')
+    S3_SERVICE = os.getenv('S3_SERVICE')
 
 
 class DockerConfig(_Config):  # pylint: disable=too-few-public-methods
