@@ -24,12 +24,16 @@ class ObjectStorageService:
         self.s3_region = current_app.config.get('S3_REGION')
         self.s3_service = current_app.config.get('S3_SERVICE')
 
-    def get_url(self, filename: string):
+    def get_url(self, filename: string, folder: string = '') -> string:
         """Get the object url."""
         if not all([self.s3_host, self.s3_bucket, filename]):
             return ''
 
-        return f'https://{self.s3_host}/{self.s3_bucket}/{filename}'
+        if folder:
+            folder = folder.strip('/')
+            folder = f'/{folder}/'
+
+        return f'https://{self.s3_host}/{self.s3_bucket}{folder}{filename}'
 
     def apply_auth_headers(self, file: Dict) -> Dict:
         """Get the S3 auth headers for the provided files."""
@@ -40,6 +44,7 @@ class ObjectStorageService:
         s3_source_uri = file.get('s3sourceuri')
         filename_split_text = os.path.splitext(file.get('filename', ''))
         unique_filename = f'{uuid.uuid4()}{filename_split_text[1]}'
+        folder = file.get('folder', '')
 
         auth = AWSRequestsAuth(
             aws_access_key=self.s3_access_key_id,
@@ -49,7 +54,7 @@ class ObjectStorageService:
             aws_service=self.s3_service
         )
 
-        s3_uri = self._get_s3_uri(s3_source_uri, unique_filename)
+        s3_uri = self._get_s3_uri(s3_source_uri, unique_filename, folder)
         response = self._make_s3_request(s3_uri, s3_source_uri, auth)
 
         file.update({
@@ -68,9 +73,9 @@ class ObjectStorageService:
 
         return file
 
-    def _get_s3_uri(self, s3_source_uri: str, unique_filename: str) -> str:
+    def _get_s3_uri(self, s3_source_uri: str, unique_filename: str, folder: str) -> str:
         """Generate the S3 URI."""
-        return s3_source_uri or self.get_url(unique_filename)
+        return s3_source_uri or self.get_url(unique_filename, folder)
 
     @staticmethod
     def _make_s3_request(s3_uri: str, s3_source_uri: str, auth: AWSRequestsAuth) -> requests.Response:

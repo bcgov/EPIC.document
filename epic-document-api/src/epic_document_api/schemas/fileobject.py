@@ -12,6 +12,7 @@ class BlobObjectRequest(Schema):
 
     filename = fields.Str(data_key='filename', allow_none=False)
     s3sourceuri = fields.Str(data_key='s3sourceuri', allow_none=True)
+    folder = fields.Str(data_key='folder', allow_none=True)
 
 
 class BlobObject(Schema):
