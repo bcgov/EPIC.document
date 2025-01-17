@@ -32,6 +32,8 @@ class ObjectStorageService:
         if folder:
             folder = folder.strip('/')
             folder = f'/{folder}/'
+        else:
+            folder = '/'
 
         return f'https://{self.s3_host}/{self.s3_bucket}{folder}{filename}'
 
