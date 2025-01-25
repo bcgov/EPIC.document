@@ -28,3 +28,14 @@ class BlobObject(Schema):
     authheader = fields.Str(data_key='authheader', allow_none=True)
     amzdate = fields.Str(data_key='amzdate', allow_none=True)
     s3sourceuri = fields.Str(data_key='s3sourceuri', allow_none=True)
+
+
+class BlobDeleteRequest(Schema):
+    """Document schema class."""
+
+    class Meta:
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    filepath = fields.Str(data_key='filepath')
