@@ -22,7 +22,6 @@ from epic_document_api.services.object_storage_service import ObjectStorageServi
 from epic_document_api.utils.util import cors_preflight
 
 from .apihelper import Api as ApiHelper
-from ..schemas.document import DocumentSchema
 
 API = Namespace('objects', description='Endpoints for Submission Management')
 """Custom exception messages
@@ -68,4 +67,4 @@ class ObjectAuthHeaders(Resource):
         """Delete document."""
         request_file = BlobDeleteRequest().load(API.payload)
         file = ObjectStorageService().delete_s3_object(request_file)
-        return DocumentSchema().dump(file), HTTPStatus.OK
+        return BlobObject().dump(file), HTTPStatus.OK

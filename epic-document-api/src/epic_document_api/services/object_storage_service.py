@@ -47,8 +47,9 @@ class ObjectStorageService:
         auth_headers = response.request.headers
         self._make_s3_delete_request(s3_source_uri, auth, auth_headers)
         document = Document.get_by_path(s3_source_uri)
-        document.delete()
-        return document
+        if document:
+            document.delete()
+        return file
 
     @staticmethod
     def _make_s3_delete_request(s3_source_uri: str, auth, auth_headers):
