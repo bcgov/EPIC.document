@@ -17,7 +17,7 @@ from http import HTTPStatus
 
 from flask_restx import Namespace, Resource, cors
 
-from epic_document_api.schemas.fileobject import BlobObject, BlobObjectRequest
+from epic_document_api.schemas.fileobject import BlobDeleteRequest, BlobObject, BlobObjectRequest
 from epic_document_api.services.object_storage_service import ObjectStorageService
 from epic_document_api.utils.util import cors_preflight
 
@@ -37,8 +37,8 @@ object_response_model = ApiHelper.convert_ma_schema_to_restx_model(
 )
 
 
-@cors_preflight('GET, OPTIONS, POST')
-@API.route('', methods=['POST', 'GET', 'OPTIONS'])
+@cors_preflight('GET, OPTIONS, POST, DELETE')
+@API.route('', methods=['POST', 'GET', 'OPTIONS', 'DELETE'])
 class ObjectAuthHeaders(Resource):
     """Resource for managing objects s3 auth headers."""
 
@@ -46,7 +46,7 @@ class ObjectAuthHeaders(Resource):
     @ApiHelper.swagger_decorators(API, endpoint_description='Get s3 auth headers for object')
     @API.expect(object_request_model)
     @API.response(
-        code=HTTPStatus.CREATED, model=object_response_model, description='File with s3 auth headers'
+        code=HTTPStatus.OK, model=object_response_model, description='File with s3 auth headers'
     )
     @API.response(HTTPStatus.BAD_REQUEST, 'Bad Request')
     @cors.crossdomain(origin='*')
@@ -54,4 +54,18 @@ class ObjectAuthHeaders(Resource):
         """Get auth headers."""
         request_file = BlobObjectRequest().load(API.payload)
         file = ObjectStorageService().apply_auth_headers(request_file)
+        return BlobObject().dump(file), HTTPStatus.OK
+
+    @staticmethod
+    @ApiHelper.swagger_decorators(API, endpoint_description='Delete s3 object')
+    @API.expect(object_request_model)
+    @API.response(
+        code=HTTPStatus.OK, model=object_response_model, description='Successfully deleted file'
+    )
+    @API.response(HTTPStatus.BAD_REQUEST, 'Bad Request')
+    @cors.crossdomain(origin='*')
+    def delete():
+        """Delete document."""
+        request_file = BlobDeleteRequest().load(API.payload)
+        file = ObjectStorageService().delete_s3_object(request_file)
         return BlobObject().dump(file), HTTPStatus.OK
