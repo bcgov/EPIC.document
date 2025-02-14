@@ -11,7 +11,7 @@ services:
       - POSTGRES_DB=epic-document
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
-      - 54334:5432/tcp
+      - 8433:5432/tcp
     restart: unless-stopped
 
   epic-document-api-db-test:
