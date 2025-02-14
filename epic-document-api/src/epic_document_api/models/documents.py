@@ -16,6 +16,7 @@ class Document(BaseModel):
     __tablename__ = 'documents'
 
     id = Column(db.Integer, primary_key=True, autoincrement=True)
+    project_id = Column(db.Integer, index=True, nullable=True)
     name = Column(db.String(255), nullable=False)
     unique_name = Column(db.String(255), nullable=False)
     path = Column(db.String(255), nullable=False)
@@ -27,3 +28,10 @@ class Document(BaseModel):
     def get_by_path(cls, path: str) -> Document:
         """Return the document by path."""
         return cls.query.filter_by(path=path).first()
+
+    @classmethod
+    def bulk_insert(cls, documents):
+        """Insert multiple documents at once."""
+        db.session.add_all(documents)
+        db.session.flush()
+        db.session.commit()

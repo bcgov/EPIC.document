@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """API endpoints for managing a submission resource."""
-
 from http import HTTPStatus
 
 from flask_restx import Namespace, Resource, cors
@@ -24,32 +23,36 @@ from epic_document_api.utils.util import cors_preflight
 from .apihelper import Api as ApiHelper
 
 
-API = Namespace('objects', description='Endpoints for Submission Management')
+API = Namespace("objects", description="Endpoints for Submission Management")
 """Custom exception messages
 """
 
 object_request_model = ApiHelper.convert_ma_schema_to_restx_model(
-    API, BlobObjectRequest(), 'An object to upload'
+    API, BlobObjectRequest(), "An object to upload"
 )
 
 object_response_model = ApiHelper.convert_ma_schema_to_restx_model(
-    API, BlobObject(), 'An object with auth headers'
+    API, BlobObject(), "An object with auth headers"
 )
 
 
-@cors_preflight('GET, OPTIONS, POST, DELETE')
-@API.route('', methods=['POST', 'GET', 'OPTIONS', 'DELETE'])
+@cors_preflight("GET, OPTIONS, POST, DELETE")
+@API.route("", methods=["POST", "GET", "OPTIONS", "DELETE"])
 class ObjectAuthHeaders(Resource):
     """Resource for managing objects s3 auth headers."""
 
     @staticmethod
-    @ApiHelper.swagger_decorators(API, endpoint_description='Get s3 auth headers for object')
+    @ApiHelper.swagger_decorators(
+        API, endpoint_description="Get s3 auth headers for object"
+    )
     @API.expect(object_request_model)
     @API.response(
-        code=HTTPStatus.OK, model=object_response_model, description='File with s3 auth headers'
+        code=HTTPStatus.OK,
+        model=object_response_model,
+        description="File with s3 auth headers",
     )
-    @API.response(HTTPStatus.BAD_REQUEST, 'Bad Request')
-    @cors.crossdomain(origin='*')
+    @API.response(HTTPStatus.BAD_REQUEST, "Bad Request")
+    @cors.crossdomain(origin="*")
     def post():
         """Get auth headers."""
         request_file = BlobObjectRequest().load(API.payload)
@@ -57,13 +60,15 @@ class ObjectAuthHeaders(Resource):
         return BlobObject().dump(file), HTTPStatus.OK
 
     @staticmethod
-    @ApiHelper.swagger_decorators(API, endpoint_description='Delete s3 object')
+    @ApiHelper.swagger_decorators(API, endpoint_description="Delete s3 object")
     @API.expect(object_request_model)
     @API.response(
-        code=HTTPStatus.OK, model=object_response_model, description='Successfully deleted file'
+        code=HTTPStatus.OK,
+        model=object_response_model,
+        description="Successfully deleted file",
     )
-    @API.response(HTTPStatus.BAD_REQUEST, 'Bad Request')
-    @cors.crossdomain(origin='*')
+    @API.response(HTTPStatus.BAD_REQUEST, "Bad Request")
+    @cors.crossdomain(origin="*")
     def delete():
         """Delete document."""
         request_file = BlobDeleteRequest().load(API.payload)
