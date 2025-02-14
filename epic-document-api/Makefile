@@ -71,7 +71,7 @@ pylint: ## Linting with pylint
 	. venv/bin/activate && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
 
 flake8: ## Linting with flake8
-	. venv/bin/activate && flake8 src/$(PROJECT_NAME) tests
+	. venv/bin/activate && flake8 --ignore=Q000,W503 src/$(PROJECT_NAME) tests
 
 lintfix: ## Linting fix
 	. venv/bin/activate && autopep8 -i -a src/**/*.py tests/**/*.py

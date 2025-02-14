@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Scaffold API",
+            "name": "Document API",
             "type": "python",
             "cwd": "${workspaceFolder}/epic-document-api/",
             "request": "launch",

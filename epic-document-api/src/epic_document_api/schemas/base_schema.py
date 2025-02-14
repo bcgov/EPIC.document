@@ -12,51 +12,64 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Super class to handle all operations related to base schema."""
+from flask import json
+from marshmallow import Schema, fields, post_dump
 
-from marshmallow import fields, post_dump
-
-from epic_document_api.models import ma
+from epic_document_api.exceptions import BadRequestError
 
 
-class BaseSchema(ma.ModelSchema):  # pylint: disable=too-many-ancestors
+class BaseSchema(Schema):  # pylint: disable=too-many-ancestors, too-few-public-methods
     """Base Schema."""
 
     def __init__(self, *args, **kwargs):
         """Excludes versions. Otherwise database will query <name>_versions table."""
-        if hasattr(self.opts.model, 'versions') and (len(self.opts.fields) == 0):
-            self.opts.exclude += ('versions',)
+        meta = getattr(self, "Meta", None)
+        if (
+            meta
+            and hasattr(meta, "model")
+            and hasattr(meta["model"], "versions")
+            and not self.fields
+        ):
+            self.exclude = getattr(self.Meta, "exclude", ()) + ("versions",)
         super().__init__(*args, **kwargs)
+
+    def handle_error(self, error, data, **kwargs):
+        """Log and raise our custom exception when validation fails."""
+        raise BadRequestError(json.dumps(error.messages))
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Meta class to declare any class attributes."""
 
-        datetimeformat = '%Y-%m-%dT%H:%M:%S+00:00'  # Default output date format.
+        datetimeformat = "%Y-%m-%dT%H:%M:%S+00:00"  # Default output date format.
 
     created_by = fields.Function(
-        lambda obj: f'{obj.created_by.firstname} {obj.created_by.lastname}' if getattr(obj, 'created_by',
-                                                                                       None) else None
+        lambda obj: (
+            f"{obj.created_by.firstname} {obj.created_by.lastname}"
+            if getattr(obj, "created_by", None)
+            else None
+        )
     )
 
     updated_by = fields.Function(
-        lambda obj: f'{obj.updated_by.firstname} {obj.updated_by.lastname}' if getattr(obj, 'updated_by',
-                                                                                       None) else None
+        lambda obj: (
+            f"{obj.updated_by.firstname} {obj.updated_by.lastname}"
+            if getattr(obj, "updated_by", None)
+            else None
+        )
     )
 
     @post_dump(pass_many=True)
-    def _remove_empty(self, data, many):
+    def _remove_empty(self, data, many):  # pylint: disable=no-self-use
         """Remove all empty values and versions from the dumped dict."""
         if not many:
             for key in list(data):
-                if key == 'versions':
+                if key == "versions":
                     data.pop(key)
 
-            return {
-                key: value for key, value in data.items()
-                if value is not None
-            }
+            return {key: value for key, value in data.items() if value is not None}
         for item in data:
             for key in list(item):
-                if (key == 'versions') or (item[key] is None):
+                if (key == "versions") or (item[key] is None):
                     item.pop(key)
 
         return data

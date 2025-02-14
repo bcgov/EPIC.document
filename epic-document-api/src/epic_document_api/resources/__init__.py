@@ -26,6 +26,7 @@ from flask import Blueprint
 from .apihelper import Api
 from .object import API as OBJECT_API
 from .ops import API as OPS_API
+from .storage_ops import API as STORAGE_OPS_API
 
 
 __all__ = ('API_BLUEPRINT', 'OPS_BLUEPRINT')
@@ -52,3 +53,4 @@ API = Api(
 
 # HANDLER = ExceptionHandler(API)
 API.add_namespace(OBJECT_API)
+API.add_namespace(STORAGE_OPS_API)
