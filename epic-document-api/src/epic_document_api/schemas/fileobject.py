@@ -1,4 +1,5 @@
 """Document schema class."""
+
 from marshmallow import EXCLUDE, Schema, fields
 
 
@@ -10,9 +11,21 @@ class BlobObjectRequest(Schema):
 
         unknown = EXCLUDE
 
-    filename = fields.Str(data_key='filename', allow_none=False)
-    s3sourceuri = fields.Str(data_key='s3sourceuri', allow_none=True)
-    folder = fields.Str(data_key='folder', allow_none=True)
+    filename = fields.Str(data_key="filename", allow_none=False)
+    s3sourceuri = fields.Str(data_key="s3sourceuri", allow_none=True)
+    folder = fields.Str(data_key="folder", allow_none=True)
+    project_id = fields.Int(
+        metadata={
+            "description": "The unique identifier of the project associated with the file"
+        },
+        allow_none=True,
+    )
+
+
+class MultiBlobObjectRequest(Schema):
+    """Request to upload multiple blob objects."""
+
+    request_objects = fields.List(fields.Nested(BlobObjectRequest), required=True)
 
 
 class BlobObject(Schema):
@@ -23,11 +36,11 @@ class BlobObject(Schema):
 
         unknown = EXCLUDE
 
-    filename = fields.Str(data_key='filename', allow_none=False)
-    filepath = fields.Str(data_key='filepath', allow_none=True)
-    authheader = fields.Str(data_key='authheader', allow_none=True)
-    amzdate = fields.Str(data_key='amzdate', allow_none=True)
-    s3sourceuri = fields.Str(data_key='s3sourceuri', allow_none=True)
+    filename = fields.Str(data_key="filename", allow_none=False)
+    filepath = fields.Str(data_key="filepath", allow_none=True)
+    authheader = fields.Str(data_key="authheader", allow_none=True)
+    amzdate = fields.Str(data_key="amzdate", allow_none=True)
+    s3sourceuri = fields.Str(data_key="s3sourceuri", allow_none=True)
 
 
 class BlobDeleteRequest(Schema):
@@ -38,4 +51,4 @@ class BlobDeleteRequest(Schema):
 
         unknown = EXCLUDE
 
-    filepath = fields.Str(data_key='filepath')
+    filepath = fields.Str(data_key="filepath")

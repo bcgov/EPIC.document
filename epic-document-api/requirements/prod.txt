@@ -26,3 +26,4 @@ flask_cors
 pyhumps
 importlib-resources
 aws-requests-auth
+boto3==1.36.19
