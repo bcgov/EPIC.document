@@ -79,8 +79,12 @@ class ObjectStorageService:
         key = f"{folder.strip('/')}/{unique_filename}"
         pre_signed_url = self.s3_client.generate_presigned_url(
             ActionOnFileEnum.PUT.value,
-            Params={"Bucket": self.s3_bucket, "Key": key},
-            ExpiresIn=300,
+            Params={
+                "Bucket": self.s3_bucket,
+                "Key": key,
+                "ContentType": "application/octet-stream",
+            },
+            ExpiresIn=3600,
         )
         document = DocumentModel(
             **{
@@ -99,7 +103,7 @@ class ObjectStorageService:
         pre_signed_url = self.s3_client.generate_presigned_url(
             ActionOnFileEnum.DELETE.value,
             Params={"Bucket": self.s3_bucket, "Key": key},
-            ExpiresIn=300,
+            ExpiresIn=3600,
         )
         document = DocumentModel.get_by_path(key)
         if document:
