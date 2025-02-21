@@ -13,6 +13,7 @@ class ActionOnFileEnum(Enum):
 
     PUT = "put_object"
     DELETE = "delete_object"
+    GET = "get_object"
 
 
 class PresignedUrlRequestSchema(BaseSchema):
