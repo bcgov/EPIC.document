@@ -12,6 +12,7 @@ from markupsafe import string
 from epic_document_api.models import Document as DocumentModel
 from epic_document_api.schemas.storage_ops import ActionOnFileEnum
 from epic_document_api.utils.boto_factory import Boto3ClientFactory
+from epic_document_api.utils.constant import PRE_SIGNED_URL_MAX_EXPIRY
 
 
 class ObjectStorageService:
@@ -57,34 +58,48 @@ class ObjectStorageService:
             document.delete()
         return file
 
-    def generate_presigned_urls(self, payload: dict):
+    def generate_presigned_urls(self, payload: dict, additional_headers: dict):
         """Generate presigned URL based on the given file information."""
         action = payload.get("action")
         relative_url = payload.get("relative_url")
         folder, filename = os.path.split(relative_url)
         project_id = payload.get("project_id", None)
+        expires = min(
+            additional_headers.get("expires", PRE_SIGNED_URL_MAX_EXPIRY),
+            PRE_SIGNED_URL_MAX_EXPIRY,
+        )
         if action == ActionOnFileEnum.PUT:
             pre_signed_url, key = self._generate_presigned_put(
-                folder, filename, project_id
+                folder, filename, additional_headers, project_id, expires
             )
         elif action == ActionOnFileEnum.DELETE:
-            pre_signed_url, key = self._generate_presigned_delete(relative_url)
+            pre_signed_url, key = self._generate_presigned_delete(relative_url, expires)
+        elif action == ActionOnFileEnum.GET:
+            pre_signed_url, key = self._generate_presigned_get(relative_url, expires)
         else:
             raise ValueError("Invalid action specified.")
         return {"presigned_url": pre_signed_url, "relative_url": key}
 
-    def _generate_presigned_put(self, folder, filename, project_id=None):
+    def _generate_presigned_put(
+        self,
+        folder,
+        filename,
+        additional_headers: dict,
+        project_id=None,
+        expires=PRE_SIGNED_URL_MAX_EXPIRY,
+    ):  # pylint: disable=too-many-arguments
         """Generate presigned put url."""
         unique_filename = self._generate_unique_filename(filename)
         key = f"{folder.strip('/')}/{unique_filename}"
+        params = {
+            "Bucket": self.s3_bucket,
+            "Key": key,
+            "ContentType": "application/octet-stream",
+        } | _param_builder(additional_headers)
         pre_signed_url = self.s3_client.generate_presigned_url(
             ActionOnFileEnum.PUT.value,
-            Params={
-                "Bucket": self.s3_bucket,
-                "Key": key,
-                "ContentType": "application/octet-stream",
-            },
-            ExpiresIn=3600,
+            Params=params,
+            ExpiresIn=expires,
         )
         document = DocumentModel(
             **{
@@ -97,17 +112,27 @@ class ObjectStorageService:
         document.save()
         return pre_signed_url, key
 
-    def _generate_presigned_delete(self, relative_url):
+    def _generate_presigned_delete(self, relative_url, expires):
         """Generate presigned delete."""
         key = relative_url
         pre_signed_url = self.s3_client.generate_presigned_url(
             ActionOnFileEnum.DELETE.value,
             Params={"Bucket": self.s3_bucket, "Key": key},
-            ExpiresIn=3600,
+            ExpiresIn=expires,
         )
         document = DocumentModel.get_by_path(key)
         if document:
             document.delete()
+        return pre_signed_url, key
+
+    def _generate_presigned_get(self, relative_url, expires):
+        """Generate presigned get."""
+        key = relative_url
+        pre_signed_url = self.s3_client.generate_presigned_url(
+            ActionOnFileEnum.GET.value,
+            Params={"Bucket": self.s3_bucket, "Key": key},
+            ExpiresIn=expires,
+        )
         return pre_signed_url, key
 
     @staticmethod
@@ -205,3 +230,11 @@ class ObjectStorageService:
         if s3_source_uri:
             return requests.get(s3_uri, auth=auth)
         return requests.put(s3_uri, data=None, auth=auth)
+
+
+def _param_builder(additional_params: dict):
+    """Build params for the presigned url request."""
+    params = {}
+    if additional_params.get("public-read", "false").lower() == "true":
+        params["ACL"] = "public-read"
+    return params

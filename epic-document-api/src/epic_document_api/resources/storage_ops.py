@@ -2,6 +2,7 @@
 
 from http import HTTPStatus
 
+from flask import request
 from flask_restx import Namespace, Resource, cors
 
 from epic_document_api.schemas.storage_ops import PresignedUrlRequestSchema, PresignedUrlResponseSchema
@@ -30,6 +31,20 @@ class PresignedURLs(Resource):
     @ApiHelper.swagger_decorators(
         API, endpoint_description="Get presiged urls for uploading files"
     )
+    @API.doc(
+        params={
+            "public-read": {
+                "description": "true if you need the url to let you put a file which is available publicaly",
+                "type": "boolean",
+                "required": False,
+            },
+            "expires": {
+                "description": "The number of seconds the url to be valid limited by 600 seconds",
+                "type": "integer",
+                "required": False,
+            },
+        }
+    )
     @API.expect(pre_signed_url_request)
     @API.response(
         code=HTTPStatus.OK,
@@ -41,5 +56,8 @@ class PresignedURLs(Resource):
     def post():
         """Get presigned urls."""
         payload = PresignedUrlRequestSchema().load(API.payload)
-        response = ObjectStorageService().generate_presigned_urls(payload)
+        additional_headers = request.args | {}
+        response = ObjectStorageService().generate_presigned_urls(
+            payload, additional_headers
+        )
         return PresignedUrlResponseSchema().dump(response), HTTPStatus.OK
