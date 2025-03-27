@@ -1,10 +1,18 @@
 replicaCount: 1
-
+cors_origin: https://submit-web-c8b80a-dev.apps.gold.devops.gov.bc.ca,https://submit-web-c8b80a-test.apps.gold.devops.gov.bc.ca
 image:
-  repository: epic-document-api
+  repository: image-registry.openshift-image-registry.svc:5000/c8b80a-tools/epic-document-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "dev"
+
+aws:
+  key: nr-epic-tst
+  secret: 96EZuuWenFPkApLEhBJsiJ6gAm86Cix4ZFvsK9BN
+  host: nrs.objectstore.gov.bc.ca
+  bucket: dev-epic
+  region: us-east-1
+  service: s3
 
 resources:
   cpu:
@@ -32,11 +40,11 @@ auth:
     alg: RS256
     aud: epic-document-web
     cacheEnabled: true
-    issuer: https://test.loginproxy.gov.bc.ca/auth/realms/eao-epic
+    issuer: https://dev.loginproxy.gov.bc.ca/auth/realms/eao-epic
     cacheTimeout: "300"
-    wellKnownConfig: https://test.loginproxy.gov.bc.ca/auth/realms/eao-epic/.well-known/openid-configuration
+    wellKnownConfig: https://dev.loginproxy.gov.bc.ca/auth/realms/eao-epic/.well-known/openid-configuration
   keycloak:
-    uri: https://test.loginproxy.gov.bc.ca
+    uri: https://dev.loginproxy.gov.bc.ca
     realm:
     adminClientId:
     adminClientSecret:
@@ -44,7 +52,7 @@ python:
   pythonBuffered: 1
   connectTimeout: 60
 cdogs:  
-  tokenEndpoint: https://test.loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token
+  tokenEndpoint: https://dev.loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token
   apiEndpoint: https://cdogs-test.api.gov.bc.ca/api/v2
   clientId:
   clientSecret:

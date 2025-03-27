@@ -1,5 +1,5 @@
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   labels:
     app: "{{ .Chart.Name }}"
@@ -7,81 +7,35 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    app: {{ .Chart.Name }}
+    matchLabels:
+      app: {{ .Chart.Name }}
   strategy:
-    activeDeadlineSeconds: 21600
-    rollingParams:
-      intervalSeconds: 1
+    type: RollingUpdate
+    rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-      timeoutSeconds: 600
-      updatePeriodSeconds: 1
-      pre:
-        failurePolicy: Abort
-        execNewPod:
-          command:
-            - /opt/app-root/pre-hook-update-db.sh
-          env:
-            - name: DATABASE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.database.secret }}
-                  key: app-db-name
-            - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.database.secret }}
-                  key: app-db-password
-            - name: DATABASE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.database.secret }}
-                  key: app-db-username
-            - name: DATABASE_HOST
-              value: {{ .Values.database.service.name }}
-            - name: DATABASE_PORT
-              value: "{{ .Values.database.service.port }}"
-          containerName: {{ .Chart.Name }}
-    type: Rolling
   template:
     metadata:
       labels:
         app: {{ .Chart.Name }}
     spec:
-      containers:
-        - resources:
+      initContainers:
+        - name: pre-hook
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/opt/app-root/pre-hook-update-db.sh"]
+          resources:
             limits:
               cpu: {{ .Values.resources.cpu.limit }}
               memory: {{ .Values.resources.memory.limit }}
             requests:
               cpu: {{ .Values.resources.cpu.request }}
               memory: {{ .Values.resources.memory.request }}
-          readinessProbe:
-            httpGet:
-              path: /ops/readyz
-              port: 8080
-              scheme: HTTP
-            timeoutSeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
-          terminationMessagePath: /dev/termination-log
-          name: {{ .Chart.Name }}
-          livenessProbe:
-            httpGet:
-              path: /ops/healthz
-              port: 8080
-              scheme: HTTP
-            timeoutSeconds: 1
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
           env:
             - name: DATABASE_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.database.secret }}
-                  key: app-db-username
+                  key: app-db-name
             - name: DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -91,88 +45,160 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.database.secret }}
-                  key: app-db-name
+                  key: app-db-username
             - name: DATABASE_HOST
               value: {{ .Values.database.service.name }}
             - name: DATABASE_PORT
               value: "{{ .Values.database.service.port }}"
-            - name: JWT_OIDC_ALGORITHMS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: JWT_OIDC_ALGORITHMS
-            - name: JWT_OIDC_AUDIENCE
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: JWT_OIDC_AUDIENCE
-            - name: JWT_OIDC_CACHING_ENABLED
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: JWT_OIDC_CACHING_ENABLED
-            - name: JWT_OIDC_ISSUER
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: JWT_OIDC_ISSUER
-            - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: JWT_OIDC_JWKS_CACHE_TIMEOUT
-            - name: JWT_OIDC_WELL_KNOWN_CONFIG
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: JWT_OIDC_WELL_KNOWN_CONFIG
-            - name: PYTHONBUFFERED
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: PYTHONBUFFERED
-            - name: KEYCLOAK_BASE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: KEYCLOAK_BASE_URL
-            - name: KEYCLOAK_REALM_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: KEYCLOAK_REALM_NAME
-            - name: KEYCLOAK_ADMIN_CLIENT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: KEYCLOAK_ADMIN_CLIENT
-            - name: KEYCLOAK_ADMIN_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: KEYCLOAK_ADMIN_SECRET
-            - name: CONNECT_TIMEOUT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}
-                  key: CONNECT_TIMEOUT
-          ports:
-            - containerPort: 8080
-              protocol: TCP
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          image: "{{ tpl .Values.image.repository . }}:{{ .Values.image.tag }}"
-      restartPolicy: Always
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        resources:
+          limits:
+            cpu: {{ .Values.resources.cpu.limit }}
+            memory: {{ .Values.resources.memory.limit }}
+          requests:
+            cpu: {{ .Values.resources.cpu.request }}
+            memory: {{ .Values.resources.memory.request }}
+        readinessProbe:
+          httpGet:
+            path: /ops/readyz
+            port: 8080
+            scheme: HTTP
+          timeoutSeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /ops/healthz
+            port: 8080
+            scheme: HTTP
+          timeoutSeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        env:
+          - name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.database.secret }}
+                key: app-db-username
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.database.secret }}
+                key: app-db-password
+          - name: DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.database.secret }}
+                key: app-db-name
+          - name: DATABASE_HOST
+            value: {{ .Values.database.service.name }}
+          - name: DATABASE_PORT
+            value: "{{ .Values.database.service.port }}"
+          - name: JWT_OIDC_ALGORITHMS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: JWT_OIDC_ALGORITHMS
+          - name: JWT_OIDC_AUDIENCE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: JWT_OIDC_AUDIENCE
+          - name: JWT_OIDC_CACHING_ENABLED
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: JWT_OIDC_CACHING_ENABLED
+          - name: JWT_OIDC_ISSUER
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: JWT_OIDC_ISSUER
+          - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: JWT_OIDC_JWKS_CACHE_TIMEOUT
+          - name: JWT_OIDC_WELL_KNOWN_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: JWT_OIDC_WELL_KNOWN_CONFIG
+          - name: PYTHONBUFFERED
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: PYTHONBUFFERED
+          - name: KEYCLOAK_BASE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: KEYCLOAK_BASE_URL
+          - name: KEYCLOAK_REALM_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: KEYCLOAK_REALM_NAME
+          - name: KEYCLOAK_ADMIN_CLIENT
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}
+                key: KEYCLOAK_ADMIN_CLIENT
+          - name: KEYCLOAK_ADMIN_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}
+                key: KEYCLOAK_ADMIN_SECRET
+          - name: CONNECT_TIMEOUT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: CONNECT_TIMEOUT
+          - name: S3_ACCESS_KEY_ID
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: S3_ACCESS_KEY_ID
+          - name: S3_SECRET_ACCESS_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: S3_SECRET_ACCESS_KEY
+          - name: S3_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: S3_HOST
+          - name: S3_BUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: S3_BUCKET
+          - name: S3_REGION
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: S3_REGION
+          - name: S3_SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: S3_SERVICE
+          - name: CORS_ORIGIN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}
+                key: CORS_ORIGIN
+        ports:
+          - containerPort: 8080
+            protocol: TCP
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
       securityContext: {}
       schedulerName: default-scheduler
-triggers:
-  - type: ImageChange
-    imageChangeParams:
-      automatic: true
-      containerNames:
-        - {{ .Chart.Name }}
-      from:
-        kind: ImageStreamTag
-        namespace: c8b80a-tools
-        name: "{{ tpl .Values.image.repository . }}:{{ .Values.image.tag }}"
