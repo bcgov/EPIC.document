@@ -68,6 +68,7 @@ class ObjectStorageService:
             additional_headers.get("expires", PRE_SIGNED_URL_MAX_EXPIRY),
             PRE_SIGNED_URL_MAX_EXPIRY,
         )
+        print(folder)
         if action == ActionOnFileEnum.PUT:
             pre_signed_url, key = self._generate_presigned_put(
                 folder, filename, additional_headers, project_id, expires
@@ -78,6 +79,7 @@ class ObjectStorageService:
             pre_signed_url, key = self._generate_presigned_get(relative_url, expires)
         else:
             raise ValueError("Invalid action specified.")
+        print(key)
         return {"presigned_url": pre_signed_url, "relative_url": key}
 
     def _generate_presigned_put(
@@ -230,6 +232,25 @@ class ObjectStorageService:
         if s3_source_uri:
             return requests.get(s3_uri, auth=auth)
         return requests.put(s3_uri, data=None, auth=auth)
+
+    def copy_s3_object(self, source_folder: str, filename: str, destination_folder: str) -> Dict:
+        """Copy an object from one folder to another in the same bucket."""
+        self._check_s3_configuration()
+
+        source_key = f"{source_folder.strip('/')}/{filename}"
+        destination_key = f"{destination_folder.strip('/')}/{filename}"
+
+        copy_source = {'Bucket': self.s3_bucket, 'Key': source_key}
+
+        try:
+            self.s3_client.copy_object(
+                Bucket=self.s3_bucket,
+                CopySource=copy_source,
+                Key=destination_key
+            )
+            return {"source": source_key, "destination": destination_key, "status": "success"}
+        except Exception as e:
+            return {"source": source_key, "destination": destination_key, "status": "error", "message": str(e)}
 
 
 def _param_builder(additional_params: dict):
