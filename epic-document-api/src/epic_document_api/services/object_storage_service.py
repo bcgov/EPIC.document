@@ -248,9 +248,32 @@ class ObjectStorageService:
                 CopySource=copy_source,
                 Key=destination_key
             )
+
             return {"source": source_key, "destination": destination_key, "status": "success"}
         except Exception as e:
             return {"source": source_key, "destination": destination_key, "status": "error", "message": str(e)}
+
+    def process_object_operation(self, request_data: dict) -> dict:
+        """Switch on the requested action and process it."""
+        action = request_data.get("action")
+        destination_folder = request_data.get("destination_folder", "")
+        relative_url = request_data.get("relative_url")
+        source_folder, unique_filename = os.path.split(relative_url)
+
+        if action == "copy":
+            result = self.copy_s3_object(source_folder, unique_filename, destination_folder)
+            document = DocumentModel(
+                **{
+                    "name": request_data.get('filename'),
+                    "unique_name": unique_filename,
+                    "path": result.get("destination"),
+                    "project_id": request_data.get("project_id", None),
+                }
+            )
+            document.save()
+            return result
+
+        return {"message": f"Invalid action: {action}", "status": "error"}
 
 
 def _param_builder(additional_params: dict):
