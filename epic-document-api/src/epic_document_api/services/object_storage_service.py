@@ -68,7 +68,6 @@ class ObjectStorageService:
             additional_headers.get("expires", PRE_SIGNED_URL_MAX_EXPIRY),
             PRE_SIGNED_URL_MAX_EXPIRY,
         )
-        print(folder)
         if action == ActionOnFileEnum.PUT:
             pre_signed_url, key = self._generate_presigned_put(
                 folder, filename, additional_headers, project_id, expires
@@ -79,7 +78,6 @@ class ObjectStorageService:
             pre_signed_url, key = self._generate_presigned_get(relative_url, expires)
         else:
             raise ValueError("Invalid action specified.")
-        print(key)
         return {"presigned_url": pre_signed_url, "relative_url": key}
 
     def _generate_presigned_put(
@@ -261,17 +259,32 @@ class ObjectStorageService:
         source_folder, unique_filename = os.path.split(relative_url)
 
         if action == "copy":
+            url = self.get_url(unique_filename, destination_folder)
+            existing_document = DocumentModel.get_by_path(url)
+            if existing_document:
+                return {
+                    "message": "Document already exists.",
+                    "status": "success",
+                    "document": existing_document.to_dict()
+                }
             result = self.copy_s3_object(source_folder, unique_filename, destination_folder)
             document = DocumentModel(
                 **{
                     "name": request_data.get('filename'),
                     "unique_name": unique_filename,
-                    "path": result.get("destination"),
+                    "path": self.get_url(
+                        unique_filename, destination_folder
+                    ),
                     "project_id": request_data.get("project_id", None),
                 }
             )
             document.save()
-            return result
+            return {
+                "message": f"Object copied successfully to {result.get('destination')}",
+                "status": "success",
+                "new_relative_url": result.get('destination'),
+                "document": document.to_dict()
+            }
 
         return {"message": f"Invalid action: {action}", "status": "error"}
 

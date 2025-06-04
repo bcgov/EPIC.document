@@ -24,6 +24,16 @@ class Document(BaseModel):
     # add index and unique constraint for file path
     db.Index('ix_documents_path', 'path', unique=True)
 
+    def to_dict(self) -> dict:
+        """Convert the document to a dictionary."""
+        return {
+            'id': self.id,
+            'project_id': self.project_id,
+            'name': self.name,
+            'unique_name': self.unique_name,
+            'path': self.path
+        }
+
     @classmethod
     def get_by_path(cls, path: str) -> Document:
         """Return the document by path."""
