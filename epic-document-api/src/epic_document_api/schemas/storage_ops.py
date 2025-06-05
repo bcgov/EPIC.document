@@ -45,3 +45,30 @@ class PresignedUrlResponseSchema(Schema):
     relative_url = fields.Str(
         metadata={"description": "The relative path of the file in the storage"}
     )
+
+
+class ObjectOperationRequestSchema(BaseSchema):
+    """Schema for performing operations on an S3 object."""
+
+    action = fields.Str(
+        metadata={"description": "The operation to perform (e.g., 'copy', 'move', 'delete')"},
+        required=True,
+    )
+    source_folder = fields.Str(
+        metadata={"description": "The source folder where the object is located"},
+        required=False,
+        allow_none=True,
+    )
+    filename = fields.Str(
+        metadata={"description": "The name of the file to operate on"},
+        required=True,
+    )
+    relative_url = fields.Str(
+        metadata={"description": "The relative URL of the file in the storage"},
+        required=True,
+    )
+    destination_folder = fields.Str(
+        metadata={"description": "The destination folder (if applicable)"},
+        required=False,
+        allow_none=True,
+    )

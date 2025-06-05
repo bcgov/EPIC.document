@@ -231,6 +231,63 @@ class ObjectStorageService:
             return requests.get(s3_uri, auth=auth)
         return requests.put(s3_uri, data=None, auth=auth)
 
+    def copy_s3_object(self, source_folder: str, filename: str, destination_folder: str) -> Dict:
+        """Copy an object from one folder to another in the same bucket."""
+        self._check_s3_configuration()
+
+        source_key = f"{source_folder.strip('/')}/{filename}"
+        destination_key = f"{destination_folder.strip('/')}/{filename}"
+
+        copy_source = {'Bucket': self.s3_bucket, 'Key': source_key}
+
+        try:
+            self.s3_client.copy_object(
+                Bucket=self.s3_bucket,
+                CopySource=copy_source,
+                Key=destination_key
+            )
+
+            return {"source": source_key, "destination": destination_key, "status": "success"}
+        except Exception as e:
+            return {"source": source_key, "destination": destination_key, "status": "error", "message": str(e)}
+
+    def process_object_operation(self, request_data: dict) -> dict:
+        """Switch on the requested action and process it."""
+        action = request_data.get("action")
+        destination_folder = request_data.get("destination_folder", "")
+        relative_url = request_data.get("relative_url")
+        source_folder, unique_filename = os.path.split(relative_url)
+
+        if action == "copy":
+            url = self.get_url(unique_filename, destination_folder)
+            existing_document = DocumentModel.get_by_path(url)
+            if existing_document:
+                return {
+                    "message": "Document already exists.",
+                    "status": "success",
+                    "document": existing_document.to_dict()
+                }
+            result = self.copy_s3_object(source_folder, unique_filename, destination_folder)
+            document = DocumentModel(
+                **{
+                    "name": request_data.get('filename'),
+                    "unique_name": unique_filename,
+                    "path": self.get_url(
+                        unique_filename, destination_folder
+                    ),
+                    "project_id": request_data.get("project_id", None),
+                }
+            )
+            document.save()
+            return {
+                "message": f"Object copied successfully to {result.get('destination')}",
+                "status": "success",
+                "new_relative_url": result.get('destination'),
+                "document": document.to_dict()
+            }
+
+        return {"message": f"Invalid action: {action}", "status": "error"}
+
 
 def _param_builder(additional_params: dict):
     """Build params for the presigned url request."""
