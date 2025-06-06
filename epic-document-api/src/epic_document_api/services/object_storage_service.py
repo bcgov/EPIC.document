@@ -265,6 +265,7 @@ class ObjectStorageService:
                 return {
                     "message": "Document already exists.",
                     "status": "success",
+                    "new_relative_url": f"{destination_folder.strip('/')}/{unique_filename}",
                     "document": existing_document.to_dict()
                 }
             result = self.copy_s3_object(source_folder, unique_filename, destination_folder)
